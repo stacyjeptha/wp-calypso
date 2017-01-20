@@ -119,13 +119,15 @@ const atEnabled = isDevOrWPCalypso && config.isEnabled( 'automated-transfer' );
 
 export function createReduxStore( initialState = {} ) {
 	const isBrowser = typeof window === 'object';
+	const isAudioSupported = typeof Audio === 'function';
 
 	const middlewares = [
 		thunkMiddleware,
 		noticesMiddleware,
 		isBrowser && require( './analytics/middleware.js' ).analyticsMiddleware,
 		isBrowser && require( './data-layer/wpcom-api-middleware.js' ).default,
-		isBrowser && atEnabled && require( './automated-transfer/middleware.js' ).default
+		isBrowser && atEnabled && require( './automated-transfer/middleware.js' ).default,
+		isAudioSupported && require( './audio/middleware.js' ).default,
 	].filter( Boolean );
 
 	const enhancers = [
