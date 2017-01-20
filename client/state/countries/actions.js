@@ -1,8 +1,4 @@
 /**
- * External Dependencies
- */
-
-/**
  * Internal Dependencies
  */
 import { SMS, DOMAIN, PAYMENT } from './constants';
@@ -16,7 +12,7 @@ import {
 
 const wpcom = wp.undocumented();
 
-export function requestCountries( listType ) {
+function requestCountries( listType ) {
 	return ( dispatch ) => {
 		dispatch( {
 			type: COUNTRIES_REQUEST,
@@ -43,4 +39,16 @@ export function requestCountries( listType ) {
 			dispatch( { type: COUNTRIES_REQUEST_FAILURE, listType, error } );
 		} );
 	};
+}
+
+export function requestSMSSupportCountries() {
+	return requestCountries( SMS );
+}
+
+export function requestDomainRegistrationSupportedCountries() {
+	return requestCountries( DOMAIN );
+}
+
+export function requestPaymentSupportCountries() {
+	return requestCountries( PAYMENT );
 }
