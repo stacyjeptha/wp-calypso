@@ -24,7 +24,6 @@
 		"happychat": false,
 		"help": true,
 		"help/courses": true,
-		"jetpack/connect": true,
 		"jetpack/seo-tools": true,
 		"jetpack_core_inline_update": true,
 		"keyboard-shortcuts": true,

@@ -33,8 +33,6 @@
 		"guided-tours/themes": true,
 		"help": true,
 		"help/courses": true,
-		"jetpack/connect": true,
-		"jetpack/personalPlan": true,
 		"jetpack/seo-tools": true,
 		"jetpack/sso": true,
 		"jetpack/sync-panel": true,
