@@ -11,5 +11,5 @@ import { get } from 'lodash';
  * @return {Array} An object with the timezones grouped by continents
  */
 export default function getTimezonesByContinent( state ) {
-	return get( state, 'timezones.items.timezones_by_continent', null );
+	return get( state, 'timezones.items.timezonesByContinent', null );
 }
