@@ -6,9 +6,6 @@ import { expect } from 'chai';
 /**
  * Internal dependencies
  */
-/**
- * Internal dependencies
- */
 import {
 	TIMEZONES_RECEIVE,
 	TIMEZONES_REQUEST,
