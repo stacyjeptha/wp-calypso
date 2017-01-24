@@ -19,6 +19,7 @@ import FormSettingExplanation from 'components/forms/form-setting-explanation';
 import FormTextarea from 'components/forms/form-textarea';
 import FormTextInput from 'components/forms/form-text-input';
 import FormToggle from 'components/forms/form-toggle';
+import QueryJetpackModules from 'components/data/query-jetpack-modules';
 import SectionHeader from 'components/section-header';
 import wrapSettingsForm from './wrap-settings-form';
 import { getSelectedSiteId } from 'state/ui/selectors';
@@ -65,8 +66,8 @@ class SiteSettingsFormDiscussion extends Component {
 	}
 
 	commentDisplaySettings() {
-		const { isJetpack, isCommentsModuleActive, jetpackVersionSupportsCalypsoSettingsUI } = this.props;
-		if ( ! isJetpack || ! isCommentsModuleActive || ! jetpackVersionSupportsCalypsoSettingsUI ) {
+		const { isJetpack, jetpackVersionSupportsCalypsoSettingsUI } = this.props;
+		if ( ! isJetpack || ! jetpackVersionSupportsCalypsoSettingsUI ) {
 			return null;
 		}
 
@@ -79,6 +80,7 @@ class SiteSettingsFormDiscussion extends Component {
 
 		return (
 			<div>
+				<QueryJetpackModules siteId={ this.props.siteId } />
 				<CommentDisplaySettings
 					onChangeField={ onChangeField }
 					submittingForm={ isRequestingSettings || isSavingSettings }
@@ -504,7 +506,6 @@ const connectComponent = connect(
 			siteId,
 			isJetpack: isJetpackSite( state, siteId ),
 			isLikesModuleActive: isJetpackModuleActive( state, siteId, 'likes' ),
-			isCommentsModuleActive: isJetpackModuleActive( state, siteId, 'comments' ),
 			jetpackVersionSupportsCalypsoSettingsUI: false !== isJetpackMinimumVersion( state, siteId, '4.6-alpha' ),
 		};
 	}
