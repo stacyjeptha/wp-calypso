@@ -46,6 +46,7 @@ const INITIAL_SUGGESTION_QUANTITY = 2;
 const analytics = analyticsMixin( 'registerDomain' ),
 	searchVendor = 'domainsbot';
 
+//region Query Reporting Optimization
 let searchQueue = [],
 	searchStackTimer = null,
 	lastSearchTimestamp = null,
@@ -98,6 +99,7 @@ function enqueueSearchStatReport( search ) {
 	}
 	searchStackTimer = window.setTimeout( processSearchStatQueue, 10000 );
 }
+//endregion
 
 const RegisterDomainStep = React.createClass( {
 	mixins: [ analytics ],
