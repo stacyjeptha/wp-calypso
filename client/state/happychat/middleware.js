@@ -29,7 +29,6 @@ import {
 	getHappychatTranscriptTimestamp
 } from 'state/happychat/selectors';
 import { getCurrentUser } from 'state/current-user/selectors';
-import getUser from 'lib/user';
 
 import buildConnection from 'lib/happychat/connection';
 
@@ -135,11 +134,9 @@ const requestTranscript = ( { getState, dispatch } ) => {
 
 export default ( store ) => {
 	const { getState } = store;
-	getUser().once( 'change', () => {
-		if ( isHappychatChatActive( getState() ) ) {
-			connectChat( store );
-		}
-	} );
+	if ( isHappychatChatActive( getState() ) ) {
+		connectChat( store );
+	}
 	return next => action => {
 		switch ( action.type ) {
 			case HAPPYCHAT_CONNECTION_OPEN:
