@@ -28,6 +28,7 @@ import jetpack from './jetpack/reducer';
 import jetpackSync from './jetpack-sync/reducer';
 import happinessEngineers from './happiness-engineers/reducer';
 import happychat from './happychat/reducer';
+import happychatMiddleware from './happychat/middleware';
 import media from './media/reducer';
 import notices from './notices/reducer';
 import pageTemplates from './page-templates/reducer';
@@ -111,7 +112,7 @@ export const reducer = combineReducers( {
 	wordads,
 } );
 
-const middleware = [ thunkMiddleware, noticesMiddleware ];
+const middleware = [ thunkMiddleware, noticesMiddleware, happychatMiddleware ];
 
 if ( typeof window === 'object' ) {
 	// Browser-specific middlewares
