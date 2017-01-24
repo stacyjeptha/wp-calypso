@@ -13,8 +13,6 @@ import controller from 'me/controller';
 import Happychat from './main';
 import { setDocumentHeadTitle } from 'state/document-head/actions';
 
-const debug = require( 'debug' )( 'calypso:happychat:controller' );
-
 const renderChat = ( context ) => {
 	context.store.dispatch( setDocumentHeadTitle( translate( 'Chat', { textOnly: true } ) ) );
 	renderWithReduxStore(
@@ -24,7 +22,6 @@ const renderChat = ( context ) => {
 	);
 };
 
-export default ( ... args ) => {
-	debug( 'is this a good place to check if it redux for existing happychat session', ... args );
+export default () => {
 	page( '/me/chat', controller.sidebar, renderChat );
 };
