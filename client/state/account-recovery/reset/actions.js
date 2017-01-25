@@ -7,31 +7,22 @@ import {
 	ACCOUNT_RECOVERY_RESET_OPTIONS_REQUEST,
 } from 'state/action-types';
 
-const fetchResetOptions = ( userData ) => {
-	return {
-		type: ACCOUNT_RECOVERY_RESET_OPTIONS_REQUEST,
-		userData,
-	};
-};
+const fetchResetOptions = userData => ( {
+	type: ACCOUNT_RECOVERY_RESET_OPTIONS_REQUEST,
+	userData,
+} );
 
-export const fetchResetOptionsByLogin = ( user ) => {
-	return fetchResetOptions( { user } );
-};
+export const fetchResetOptionsByLogin = user => fetchResetOptions( { user } );
 
-export const fetchResetOptionsByNameAndUrl = ( firstname, lastname, url ) => {
-	return fetchResetOptions( { firstname, lastname, url } );
-};
+export const fetchResetOptionsByNameAndUrl = ( firstname, lastname, url ) =>
+	fetchResetOptions( { firstname, lastname, url } );
 
-export const fetchResetOptionsSuccess = ( options ) => {
-	return {
-		type: ACCOUNT_RECOVERY_RESET_OPTIONS_RECEIVE,
-		options,
-	};
-};
+export const fetchResetOptionsSuccess = ( options ) => ( {
+	type: ACCOUNT_RECOVERY_RESET_OPTIONS_RECEIVE,
+	options,
+} );
 
-export const fetchResetOptionsError = ( error ) => {
-	return {
-		type: ACCOUNT_RECOVERY_RESET_OPTIONS_ERROR,
-		error,
-	};
-};
+export const fetchResetOptionsError = ( error ) => ( {
+	type: ACCOUNT_RECOVERY_RESET_OPTIONS_ERROR,
+	error,
+} );
