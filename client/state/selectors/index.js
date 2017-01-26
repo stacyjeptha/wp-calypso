@@ -40,6 +40,7 @@ export getSharingButtons from './get-sharing-buttons';
 export getSiteGmtOffset from './get-site-gmt-offset';
 export getSiteIconId from './get-site-icon-id';
 export getSiteIconUrl from './get-site-icon-url';
+export getSiteTimezoneName from './get-site-timezone-name';
 export getSiteTimezoneValue from './get-site-timezone-value';
 export getTimezonesByContinent from './get-timezones-by-continent';
 export getUpcomingBillingTransactions from './get-upcoming-billing-transactions';
