@@ -23,15 +23,16 @@ export function fetchThemeDetailsData( context, next ) {
 		return next();
 	}
 
+	const siteId = 'wpcom';
 	const themeSlug = context.params.slug;
-	const theme = getTheme( context.store.getState(), themeSlug );
+	const theme = getTheme( context.store.getState(), siteId, themeSlug );
 
 	if ( theme ) {
 		debug( 'found theme in cache!', theme.id );
 		return next();
 	}
 
-	context.store.dispatch( requestTheme( themeSlug, 'wpcom' ) )
+	context.store.dispatch( requestTheme( themeSlug, siteId ) )
 		.then( () => {
 			next();
 		} );
