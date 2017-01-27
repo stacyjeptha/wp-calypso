@@ -2,7 +2,8 @@
  * External dependencies
  */
 import debugModule from 'debug';
-import { pick, throttle } from 'lodash';
+import pick from 'lodash/pick';
+import throttle from 'lodash/throttle';
 
 /**
  * Internal dependencies
@@ -27,17 +28,13 @@ const MINUTE_IN_MS = 1000 * 60;
 export const SERIALIZE_THROTTLE = MINUTE_IN_MS;
 export const MAX_AGE = 7 * DAY_IN_HOURS * HOUR_IN_MS;
 
-function getSerializedServerState() {
+function getInitialServerState() {
+	// Bootstrapped state from a server-render
 	if ( typeof window === 'object' && window.initialReduxState && ! isSupportUserSession() ) {
-		return window.initialReduxState;
+		const serverState = reducer( window.initialReduxState, { type: DESERIALIZE } );
+		return pick( serverState, Object.keys( window.initialReduxState ) );
 	}
 	return {};
-}
-
-function getInitialServerState( serializedServerState ) {
-	// Bootstrapped state from a server-render
-	const serverState = reducer( serializedServerState, { type: DESERIALIZE } );
-	return pick( serverState, Object.keys( serializedServerState ) );
 }
 
 function serialize( state ) {
@@ -61,7 +58,7 @@ function loadInitialState( initialState ) {
 		initialState = {};
 	}
 	const localforageState = deserialize( initialState );
-	const serverState = getInitialServerState( getSerializedServerState() );
+	const serverState = getInitialServerState();
 	const mergedState = Object.assign( {}, localforageState, serverState );
 	return createReduxStore( mergedState );
 }
