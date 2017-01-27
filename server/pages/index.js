@@ -3,7 +3,7 @@
  */
 import express from 'express';
 import fs from 'fs';
-import crypto from 'crypto';
+import { createHash } from 'crypto';
 import qs from 'qs';
 import { execSync } from 'child_process';
 import cookieParser from 'cookie-parser';
@@ -25,7 +25,7 @@ import { DESERIALIZE } from 'state/action-types';
 
 const debug = debugFactory( 'calypso:pages' );
 
-let HASH_LENGTH = 10,
+const HASH_LENGTH = 10,
 	URL_BASE_PATH = '/calypso',
 	SERVER_BASE_PATH = '/public',
 	CALYPSO_ENV = process.env.CALYPSO_ENV || process.env.NODE_ENV || 'development';
@@ -53,8 +53,8 @@ function getInitialServerState( serializedServerState ) {
  * @returns {String} A shortened md5 hash of the contents of the file file or a timestamp in the case of failure.
  **/
 function hashFile( path ) {
-	let data, hash,
-		md5 = crypto.createHash( 'md5' );
+	const md5 = createHash( 'md5' );
+	let data, hash;
 
 	try {
 		data = fs.readFileSync( path );
@@ -199,13 +199,13 @@ function setUpLoggedOutRoute( req, res, next ) {
 }
 
 function setUpLoggedInRoute( req, res, next ) {
-	let redirectUrl, protocol, start, context;
+	let redirectUrl, protocol, start;
 
 	res.set( {
 		'X-Frame-Options': 'SAMEORIGIN'
 	} );
 
-	context = getDefaultContext( req );
+	const context = getDefaultContext( req );
 
 	if ( config( 'wpcom_user_bootstrap' ) ) {
 		const user = require( 'user-bootstrap' );
@@ -227,7 +227,7 @@ function setUpLoggedInRoute( req, res, next ) {
 
 		debug( 'Issuing API call to fetch user object' );
 		user( req.get( 'Cookie' ), function( error, data ) {
-			let end, searchParam, errorMessage;
+			let searchParam, errorMessage;
 
 			if ( error ) {
 				if ( error.error === 'authorization_required' ) {
@@ -248,7 +248,7 @@ function setUpLoggedInRoute( req, res, next ) {
 				return;
 			}
 
-			end = ( new Date().getTime() ) - start;
+			const end = ( new Date().getTime() ) - start;
 
 			debug( 'Rendering with bootstrapped user object. Fetched in %d ms', end );
 			context.user = data;
