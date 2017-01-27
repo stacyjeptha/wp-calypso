@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import debugFactory from 'debug';
-import Lru from 'lru';
 import startsWith from 'lodash/startsWith';
 
 /**
@@ -15,15 +14,11 @@ import {
 	themeRequestFailure,
 	setBackPath
 } from 'state/themes/actions';
+import { getTheme } from 'state/themes/selectors';
 import wpcom from 'lib/wp';
 import config from 'config';
 
 const debug = debugFactory( 'calypso:themes' );
-const HOUR_IN_MS = 3600000;
-const themeDetailsCache = new Lru( {
-	max: 500,
-	maxAge: HOUR_IN_MS
-} );
 
 export function fetchThemeDetailsData( context, next ) {
 	if ( ! config.isEnabled( 'manage/themes/details' ) || ! context.isServerSide ) {
@@ -31,20 +26,19 @@ export function fetchThemeDetailsData( context, next ) {
 	}
 
 	const themeSlug = context.params.slug;
-	const theme = themeDetailsCache.get( themeSlug );
+	const theme = getTheme( context.store.getState(), themeSlug );
 
 	if ( theme ) {
 		debug( 'found theme!', theme.id );
-		context.store.dispatch( receiveTheme( theme, 'wpcom' ) );
 		context.renderCacheKey = context.path + theme.timestamp;
 		return next();
 	}
 
+	// change to use requestTheme action
 	wpcom.undocumented().themeDetails( themeSlug )
 		.then( themeDetails => {
 			debug( 'caching', themeSlug );
 			themeDetails.timestamp = Date.now();
-			themeDetailsCache.set( themeSlug, themeDetails );
 			context.store.dispatch( receiveTheme( themeDetails, 'wpcom' ) );
 			context.renderCacheKey = context.path + themeDetails.timestamp;
 			next();
