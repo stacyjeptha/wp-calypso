@@ -10,12 +10,10 @@ import startsWith from 'lodash/startsWith';
  */
 import ThemeSheetComponent from './main';
 import {
-	receiveTheme,
-	themeRequestFailure,
+	requestTheme,
 	setBackPath
 } from 'state/themes/actions';
 import { getTheme } from 'state/themes/selectors';
-import wpcom from 'lib/wp';
 import config from 'config';
 
 const debug = debugFactory( 'calypso:themes' );
@@ -29,24 +27,12 @@ export function fetchThemeDetailsData( context, next ) {
 	const theme = getTheme( context.store.getState(), themeSlug );
 
 	if ( theme ) {
-		debug( 'found theme!', theme.id );
-		context.renderCacheKey = context.path + theme.timestamp;
+		debug( 'found theme in cache!', theme.id );
 		return next();
 	}
 
-	// change to use requestTheme action
-	wpcom.undocumented().themeDetails( themeSlug )
-		.then( themeDetails => {
-			debug( 'caching', themeSlug );
-			themeDetails.timestamp = Date.now();
-			context.store.dispatch( receiveTheme( themeDetails, 'wpcom' ) );
-			context.renderCacheKey = context.path + themeDetails.timestamp;
-			next();
-		} )
-		.catch( error => {
-			debug( `Error fetching theme ${ themeSlug } details: `, error.message || error );
-			context.store.dispatch( themeRequestFailure( 'wpcom', themeSlug, error ) );
-			context.renderCacheKey = 'theme not found';
+	context.store.dispatch( requestTheme( themeSlug, 'wpcom' ) )
+		.then( () => {
 			next();
 		} );
 }
