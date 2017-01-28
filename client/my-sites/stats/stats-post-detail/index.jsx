@@ -5,7 +5,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import page from 'page';
 import { localize } from 'i18n-calypso';
-import { flowRight } from 'lodash';
+import { flowRight, get } from 'lodash';
 
 /**
  * Internal dependencies
@@ -20,7 +20,11 @@ import Main from 'components/main';
 import StatsFirstView from '../stats-first-view';
 import PostLikes from '../stats-post-likes';
 import QueryPosts from 'components/data/query-posts';
+import Button from 'components/button';
+import WebPreview from 'components/web-preview';
+import Gridicon from 'components/gridicon';
 import { getSelectedSiteId } from 'state/ui/selectors';
+import { getSiteSlug } from 'state/sites/selectors';
 import { getSitePost, isRequestingSitePost } from 'state/posts/selectors';
 
 class StatsPostDetail extends Component {
@@ -29,7 +33,12 @@ class StatsPostDetail extends Component {
 		siteId: PropTypes.number,
 		postId: PropTypes.number,
 		translate: PropTypes.func,
-		context: PropTypes.object
+		context: PropTypes.object,
+		siteSlug: PropTypes.string,
+	};
+
+	state = {
+		showPreview: false
 	};
 
 	goBack = () => {
@@ -43,9 +52,23 @@ class StatsPostDetail extends Component {
 		window.scrollTo( 0, 0 );
 	}
 
+	openPreview = () => {
+		this.setState( {
+			showPreview: true
+		} );
+	}
+
+	closePreview = () => {
+		this.setState( {
+			showPreview: false
+		} );
+	}
+
 	render() {
-		const { isRequesting, post, postId, siteId } = this.props;
+		const { isRequesting, post, postId, siteId, translate, siteSlug } = this.props;
 		const postOnRecord = post && post.title !== null;
+		const postUrl = get( post, 'URL' );
+
 		let title;
 		if ( postOnRecord ) {
 			if ( typeof post.title === 'string' && post.title.length ) {
@@ -86,6 +109,22 @@ class StatsPostDetail extends Component {
 				/>
 
 				<PostWeeks siteId={ this.props.siteId } postId={ this.props.postId } />
+				<div className="stats-post-detail__footer">
+					<Button borderless compact onClick={ this.openPreview }>
+						<Gridicon icon="external" /> { translate( 'View Post' ) }
+					</Button>
+					<Button borderless compact href={ `/post/${ siteSlug }/${ postId }` }>
+						<Gridicon icon="pencil" /> { translate( 'Edit Post' ) }
+					</Button>
+				</div>
+				<WebPreview
+					showPreview={ this.state.showPreview }
+					defaultViewportDevice="tablet"
+					previewUrl={ postUrl }
+					externalUrl={ postUrl }
+					onClose={ this.closePreview }
+					loadingMessage="Beep beep boop…"
+				/>
 			</Main>
 		);
 	}
@@ -98,6 +137,7 @@ const connectComponent = connect(
 		return {
 			post: getSitePost( state, siteId, postId ),
 			isRequesting: isRequestingSitePost( state, siteId, postId ),
+			siteSlug: getSiteSlug( state, siteId ),
 			siteId,
 		};
 	}
