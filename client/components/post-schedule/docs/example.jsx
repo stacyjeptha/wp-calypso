@@ -8,7 +8,7 @@ import PureRenderMixin from 'react-pure-render/mixin';
  * Internal dependencies
  */
 import PostSchedule from 'components/post-schedule';
-import Timezone from 'components/timezone';
+import Timezone from 'blocks/timezone';
 import Gridicon from 'components/gridicon';
 import Card from 'components/card';
 
