@@ -85,12 +85,12 @@ export function interceptStreamPageRequest( store, action, next ) {
 
 	const tracker = trackPromise( requestKey, request );
 
-	tracker
+	next( action );
+
+	return tracker
 		.then( transformResponse )
 		.then( dispatchReceive )
 		.catch( dispatchError );
-
-	next( action );
 }
 
 export default {
