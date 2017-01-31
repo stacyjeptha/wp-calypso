@@ -1,0 +1,15 @@
+{
+	"name": "domain-search",
+	"author": "Automattic",
+	"description": "Domain Search",
+	"version": "0.0.1",
+	"env_id": [ "development", "wpcalypso" ],
+	"section": {
+		"name": "domain-search",
+		"paths": [ "/domain-search" ],
+		"module": "domain-search",
+		"group": "sites",
+		"secondary": true,
+		"enableLoggedOut": true
+	}
+}

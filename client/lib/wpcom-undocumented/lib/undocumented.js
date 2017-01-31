@@ -458,6 +458,19 @@ Undocumented.prototype.isDomainAvailable = function( domain, fn ) {
 };
 
 /**
+ * Determine whether a string is available for registration in all supported TLDs
+ *
+ * @param {string} string - The string name to check.
+ * @param {Function} fn The callback function
+ * @api public
+ */
+Undocumented.prototype.isDomainAllTLDsAvailable = function( string, fn ) {
+	string = encodeURIComponent( string );
+
+	return this.wpcom.req.get( { path: '/domains/available/' + string }, fn );
+};
+
+/**
  * Determine whether a domain name can be used for Site Redirect
  *
  * @param {int|string} siteId The site ID
