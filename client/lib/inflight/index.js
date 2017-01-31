@@ -1,16 +1,24 @@
-var inflight = {};
+const inflight = new Set();
 
 // Utility methods to track inflight async requests
-module.exports = {
+export default {
 	requestInflight: function( requestKey ) {
-		return requestKey in inflight;
+		return inflight.has( requestKey );
+	},
+
+	startRequest: function( requestKey ) {
+		inflight.add( requestKey );
+	},
+
+	endRequest: function( requestKey ) {
+		inflight.delete( requestKey );
 	},
 
 	requestTracker: function( requestKey, callback ) {
-		inflight[ requestKey ] = true;
+		inflight.add( requestKey );
 		return function( error, data ) {
-			delete inflight[ requestKey ];
+			inflight.delete( requestKey );
 			callback( error, data );
 		};
-	}
+	},
 };
