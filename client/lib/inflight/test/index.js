@@ -13,24 +13,22 @@ const THE_ANSWER = 42;
 
 describe( 'inflight', ( ) => {
 	describe( 'promiseTracker', () => {
-		it( 'should mark an item as inflight while the request is ongoing', ( done ) => {
+		it( 'should mark an item as inflight while the request is ongoing', () => {
 			const key = randomRequestKey();
 			const trackedPromise = inflight.promiseTracker( key, Promise.resolve( THE_ANSWER ) );
 
 			expect( inflight.requestInflight( key ) ).to.be.true;
-			trackedPromise.then( () => {
+			return trackedPromise.then( () => {
 				expect( inflight.requestInflight( key ) ).to.be.false;
-				done();
 			} );
 		} );
 
-		it( 'should return the same data as the original promise', ( done ) => {
+		it( 'should return the same data as the original promise', () => {
 			const key = randomRequestKey();
 			const trackedPromise = inflight.promiseTracker( key, Promise.resolve( THE_ANSWER ) );
 
-			trackedPromise.then( data => {
+			return trackedPromise.then( data => {
 				expect( data ).to.equal( THE_ANSWER );
-				done();
 			} );
 		} );
 	} );
