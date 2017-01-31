@@ -8,11 +8,10 @@ var Dispatcher = require( 'dispatcher' ),
 	wpcom = require( 'lib/wp' ),
 	ActionTypes = require( './constants' ).action,
 	FeedSubscriptionHelper = require( './helper' ),
+	inflight = require( 'lib/inflight' ),
 	FeedSubscriptionStore = require( './index' ),
 	SiteStoreActionTypes = require( 'lib/reader-site-store/constants' ).action,
 	FeedStoreActionTypes = require( 'lib/feed-store/constants' ).action;
-
-import inflight from 'lib/inflight';
 
 var FeedSubscriptionActions = {
 	follow: function( url, fetchMeta = true ) {
