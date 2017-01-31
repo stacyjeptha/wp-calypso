@@ -323,7 +323,7 @@ class DomanSearch extends Component {
 						{
 							this.state.searchQuery &&
 							! this.state.loadMore &&
-							( <div style={ { textAlign: 'center' } }><a onClick={ this.loadMore }>Load more</a></div> )
+							( <div style={ { textAlign: 'center' } }><a onClick={ this.loadMore }>See more</a></div> )
 						}
 						{
 							this.state.loadMore &&
