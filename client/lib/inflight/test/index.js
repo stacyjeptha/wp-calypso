@@ -8,13 +8,12 @@ import { expect } from 'chai';
  */
 import inflight from '../';
 
-const randomRequestKey = () => `${ Math.random() }`;
 const THE_ANSWER = 42;
 
 describe( 'inflight', ( ) => {
 	describe( 'promiseTracker', () => {
 		it( 'should mark an item as inflight while the request is ongoing', () => {
-			const key = randomRequestKey();
+			const key = 'key1';
 			const trackedPromise = inflight.promiseTracker( key, Promise.resolve( THE_ANSWER ) );
 
 			expect( inflight.requestInflight( key ) ).to.be.true;
@@ -24,7 +23,7 @@ describe( 'inflight', ( ) => {
 		} );
 
 		it( 'should return the same data as the original promise', () => {
-			const key = randomRequestKey();
+			const key = 'key2';
 			const trackedPromise = inflight.promiseTracker( key, Promise.resolve( THE_ANSWER ) );
 
 			return trackedPromise.then( data => {
