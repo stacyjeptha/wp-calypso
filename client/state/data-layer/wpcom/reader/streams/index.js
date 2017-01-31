@@ -33,9 +33,7 @@ function keyForRequest( action ) {
 	const { streamId, query } = action;
 	const actionString = Object.keys( query )
 		.sort() // sort the keys to make the string deterministic. key ordering is not.
-		.map( ( key ) => `${ key }=${ query[ key ] }` )
-		.join( '&' )
-	;
+		.reduce( ( memo, key ) => memo + `&${ key }=${ query[ key ] }`, '' );
 	return `reader-streams-${ streamId }-${ actionString }`;
 }
 
@@ -93,7 +91,6 @@ export function interceptStreamPageRequest( store, action, next ) {
 		.catch( dispatchError );
 
 	next( action );
-	return request;
 }
 
 export default {

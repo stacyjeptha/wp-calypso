@@ -18,7 +18,7 @@ describe( 'streams', () => {
 			get: getStub
 		}
 	};
-	const dispatchSpy = spy();
+	const dispatchSpy = stub();
 	const storeStub = {
 		dispatch: dispatchSpy
 	};
@@ -49,7 +49,7 @@ describe( 'streams', () => {
 		expect( warnSpy ).to.have.been.calledOnce;
 	} );
 
-	it( 'should call the right api based on the stream id', () => {
+	it( 'should call the right api based on the stream id', ( done ) => {
 		const action = {
 			streamId: 'following',
 			query: {
@@ -66,13 +66,8 @@ describe( 'streams', () => {
 			.withArgs( '/read/following', { apiVersion: '1.2' }, { one: 'time' } )
 			.returns( Promise.resolve( fakeResponse ) );
 
-		const request = interceptStreamPageRequest( storeStub, action, nextSpy );
-
-		expect( getStub ).to.have.been.calledOnce;
-
-		return request.then( () => {
-			expect( dispatchSpy ).to.have.been.calledOnce;
-			expect( dispatchSpy ).to.have.been.calledWith( {
+		storeStub.dispatch = function( args ) {
+			expect( args ).to.eql( {
 				type: 'READER_STREAMS_PAGE_RECEIVE',
 				payload: fakeResponse,
 				query: {
@@ -80,6 +75,12 @@ describe( 'streams', () => {
 				},
 				streamId: 'following'
 			} );
-		} );
+			done();
+		};
+
+		interceptStreamPageRequest( storeStub, action, nextSpy );
+
+		expect( getStub ).to.have.been.calledOnce;
+		expect( warnSpy ).to.have.not.been.called;
 	} );
 } );
