@@ -22,7 +22,6 @@ import PostLikes from '../stats-post-likes';
 import QueryPosts from 'components/data/query-posts';
 import Button from 'components/button';
 import WebPreview from 'components/web-preview';
-import Gridicon from 'components/gridicon';
 import { getSelectedSiteId } from 'state/ui/selectors';
 import { getSiteSlug } from 'state/sites/selectors';
 import { getSitePost, isRequestingSitePost } from 'state/posts/selectors';
@@ -84,7 +83,12 @@ class StatsPostDetail extends Component {
 				<QueryPosts siteId={ siteId } postId={ postId } />
 				<StatsFirstView />
 
-				<HeaderCake onClick={ this.goBack }>
+				<HeaderCake
+					onClick={ this.goBack }
+					actionIcon="visible"
+					actionText={ translate( 'View Post' ) }
+					actionOnClick={ this.openPreview }
+					>
 					{ title }
 				</HeaderCake>
 
@@ -109,22 +113,18 @@ class StatsPostDetail extends Component {
 				/>
 
 				<PostWeeks siteId={ this.props.siteId } postId={ this.props.postId } />
-				<div className="stats-post-detail__footer">
-					<Button borderless compact onClick={ this.openPreview }>
-						<Gridicon icon="external" /> { translate( 'View Post' ) }
-					</Button>
-					<Button borderless compact href={ `/post/${ siteSlug }/${ postId }` }>
-						<Gridicon icon="pencil" /> { translate( 'Edit Post' ) }
-					</Button>
-				</div>
 				<WebPreview
 					showPreview={ this.state.showPreview }
 					defaultViewportDevice="tablet"
-					previewUrl={ postUrl }
+					previewUrl={ `${ postUrl }?demo=true&iframe=true&theme_preview=true` }
 					externalUrl={ postUrl }
 					onClose={ this.closePreview }
 					loadingMessage="Beep beep boop…"
-				/>
+				>
+					<Button href={ `/post/${ siteSlug }/${ postId }` }>
+						{ translate( 'Edit' ) }
+					</Button>
+				</WebPreview>
 			</Main>
 		);
 	}
