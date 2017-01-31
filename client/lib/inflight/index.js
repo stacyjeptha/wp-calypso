@@ -3,14 +3,6 @@ const inflight = new Set();
 // Utility methods to track inflight async requests
 export function requestInflight( requestKey ) {
 	return inflight.has( requestKey );
-};
-
-export function startRequest( requestKey ) {
-	inflight.add( requestKey );
-}
-
-export function endRequest( requestKey ) {
-	inflight.delete( requestKey );
 }
 
 export function requestTracker( requestKey, callback ) {
@@ -21,10 +13,18 @@ export function requestTracker( requestKey, callback ) {
 	};
 }
 
-export function dedupedRequest( requestKey, callback ) {
-	if ( inflight.has( requestKey ) ) {
-		return;
-	}
-
-	return requestTracker( requestKey, callback );
+export function promiseTracker( requestKey, promise ) {
+	inflight.add( requestKey );
+	promise
+		.then(
+			() => inflight.delete( requestKey ),
+			() => inflight.delete( requestKey ),
+		);
+	return promise;
 }
+
+export default {
+	requestInflight,
+	requestTracker,
+	promiseTracker,
+};
