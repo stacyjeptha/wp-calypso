@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import url from 'url';
@@ -13,9 +13,17 @@ import Gridicon from 'gridicons';
  * Internal dependencies
  */
 import { isEnabled } from 'config';
+import {
+	composeAnalytics,
+	recordGoogleEvent,
+	recordTracksEvent,
+} from 'state/analytics/actions';
+import {
+	canCurrentUser,
+	isPublicizeEnabled,
+} from 'state/selectors';
 import { ga } from 'lib/analytics';
 import { userCan } from 'lib/posts/utils';
-import { isPublicizeEnabled } from 'state/selectors';
 
 const view = () => ga.recordEvent( 'Posts', 'Clicked View Post' );
 const preview = () => ga.recordEvent( 'Posts', 'Clicked Preiew Post' );
@@ -207,22 +215,37 @@ export const PostControls = props => {
 	);
 };
 
-PostControls.propTypes = {
-	editURL: PropTypes.string.isRequired,
-	fullWidth: PropTypes.bool,
-	isPublicizeEnabled: PropTypes.bool,
-	onDelete: PropTypes.func,
-	onHideMore: PropTypes.func.isRequired,
-	onPublish: PropTypes.func,
-	onRestore: PropTypes.func,
-	onShowMore: PropTypes.func.isRequired,
-	onToggleShare: PropTypes.func,
-	onTrash: PropTypes.func,
-	post: PropTypes.object.isRequired,
-	site: PropTypes.object,
-	translate: PropTypes.func,
+const mapStateToProps = ( state, { site, post } ) => {
+	const siteId = site && site.ID ? site.ID : null;
+	return {
+		canUserDeletePost: canCurrentUser( state, siteId, 'delete_posts' ),
+		canUserEditPost: canCurrentUser( state, siteId, 'edit_posts' ),
+		canUserPublishPost: canCurrentUser( state, siteId, 'publish_posts' ),
+		isPublicizeEnabled: isPublicizeEnabled( state, siteId, post.type ),
+	};
 };
 
-export default connect( ( state, { site, post } ) => ( {
-	isPublicizeEnabled: isPublicizeEnabled( state, site.ID, post.type ),
-} ) )( localize( PostControls ) );
+const mapDispatchToProps = {
+	recordCopyPost: () => composeAnalytics(
+		recordGoogleEvent( 'Posts', 'Clicked Copy Post' ),
+		recordTracksEvent( 'calypso_post_controls_copy_post_click' ),
+	),
+	recordEditPost: () => composeAnalytics(
+		recordGoogleEvent( 'Posts', 'Clicked Edit Post' ),
+		recordTracksEvent( 'calypso_post_controls_edit_post_click' ),
+	),
+	recordPreviewPost: () => composeAnalytics(
+		recordGoogleEvent( 'Posts', 'Clicked Preview Post' ),
+		recordTracksEvent( 'calypso_post_controls_preview_post_click' ),
+	),
+	recordViewPost: () => composeAnalytics(
+		recordGoogleEvent( 'Posts', 'Clicked View Post' ),
+		recordTracksEvent( 'calypso_post_controls_view_post_click' ),
+	),
+	recordViewPostStats: () => composeAnalytics(
+		recordGoogleEvent( 'Posts', 'Clicked View Post Stats' ),
+		recordTracksEvent( 'calypso_post_controls_view_post_stats_click' ),
+	),
+};
+
+export default connect( mapStateToProps, mapDispatchToProps )( localize( PostControls ) );
