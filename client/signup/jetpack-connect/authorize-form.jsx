@@ -662,8 +662,8 @@ const JetpackConnectAuthorizeForm = React.createClass( {
 	},
 
 	isSSO() {
-		const site = urlToSlug( this.props.jetpackConnectAuthorize.queryObject.site );
-		return !! ( this.props.jetpackSSOSessions && this.props.jetpackSSOSessions[ site ] );
+		const slug = urlToSlug( this.props.jetpackConnectAuthorize.queryObject.client_id );
+		return !! ( this.props.jetpackSSOSessions && this.props.jetpackSSOSessions[ slug ] );
 	},
 
 	renderNoQueryArgsError() {

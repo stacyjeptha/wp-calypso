@@ -53,8 +53,11 @@ function buildDefaultAuthorizeState() {
 	};
 }
 
-function buildUrlSessionObj( url, flowType ) {
-	const slug = urlToSlug( url );
+function buildSessionObj( key, flowType ) {
+	const slug = isNaN( key )
+		? urlToSlug( key )
+		: String( key );
+
 	const sessionValue = {
 		timestamp: Date.now(),
 		flowType: flowType || ''
@@ -65,7 +68,7 @@ function buildUrlSessionObj( url, flowType ) {
 export function jetpackConnectSessions( state = {}, action ) {
 	switch ( action.type ) {
 		case JETPACK_CONNECT_CHECK_URL:
-			return Object.assign( {}, state, buildUrlSessionObj( action.url, action.flowType ) );
+			return Object.assign( {}, state, buildSessionObj( action.url, action.flowType ) );
 		case DESERIALIZE:
 			if ( isValidStateWithSchema( state, jetpackConnectSessionsSchema ) ) {
 				return pickBy( state, ( session ) => {
@@ -282,9 +285,9 @@ export function jetpackAuthAttempts( state = {}, action ) {
 export function jetpackSSO( state = {}, action ) {
 	switch ( action.type ) {
 		case JETPACK_CONNECT_SSO_VALIDATION_REQUEST:
-			return Object.assign( state, { isValidating: true } );
+			return Object.assign( {}, state, { isValidating: true } );
 		case JETPACK_CONNECT_SSO_VALIDATION_SUCCESS:
-			return Object. assign( state, {
+			return Object. assign( {}, state, {
 				isValidating: false,
 				validationError: false,
 				nonceValid: action.success,
@@ -292,13 +295,13 @@ export function jetpackSSO( state = {}, action ) {
 				sharedDetails: action.sharedDetails
 			} );
 		case JETPACK_CONNECT_SSO_VALIDATION_ERROR:
-			return Object. assign( state, { isValidating: false, validationError: action.error, nonceValid: false } );
+			return Object.assign( {}, state, { isValidating: false, validationError: action.error, nonceValid: false } );
 		case JETPACK_CONNECT_SSO_AUTHORIZE_REQUEST:
-			return Object.assign( state, { isAuthorizing: true } );
+			return Object.assign( {}, state, { isAuthorizing: true } );
 		case JETPACK_CONNECT_SSO_AUTHORIZE_SUCCESS:
-			return Object. assign( state, { isAuthorizing: false, authorizationError: false, ssoUrl: action.ssoUrl } );
+			return Object.assign( {}, state, { isAuthorizing: false, authorizationError: false, ssoUrl: action.ssoUrl } );
 		case JETPACK_CONNECT_SSO_AUTHORIZE_ERROR:
-			return Object. assign( state, { isAuthorizing: false, authorizationError: action.error, ssoUrl: false } );
+			return Object.assign( {}, state, { isAuthorizing: false, authorizationError: action.error, ssoUrl: false } );
 		case SERIALIZE:
 		case DESERIALIZE:
 			return {};
@@ -308,8 +311,8 @@ export function jetpackSSO( state = {}, action ) {
 
 export function jetpackSSOSessions( state = {}, action ) {
 	switch ( action.type ) {
-		case JETPACK_CONNECT_SSO_AUTHORIZE_SUCCESS:
-			return Object.assign( {}, state, buildUrlSessionObj( action.siteUrl ) );
+		case JETPACK_CONNECT_SSO_AUTHORIZE_REQUEST:
+			return Object.assign( {}, state, buildSessionObj( action.siteId ) );
 		case SERIALIZE:
 			return state;
 		case DESERIALIZE:

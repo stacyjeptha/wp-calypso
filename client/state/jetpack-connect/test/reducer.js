@@ -350,32 +350,20 @@ describe( 'reducer', () => {
 		it( 'should store an integer timestamp when creating new session', () => {
 			const nowTime = Date.now();
 			const state = jetpackSSOSessions( undefined, {
-				type: JETPACK_CONNECT_SSO_AUTHORIZE_SUCCESS,
-				ssoUrl: 'https://example.wordpress.com?action=jetpack-sso&result=success&sso_nonce={$nonce}&user_id={$user_id}',
-				siteUrl: 'https://example.wordpress.com'
+				type: JETPACK_CONNECT_SSO_AUTHORIZE_REQUEST,
+				siteId: 12345
 			} );
 
-			expect( state ).to.have.property( 'example.wordpress.com' )
+			expect( state ).to.have.property( '12345' )
 				.to.be.a( 'object' );
-			expect( state[ 'example.wordpress.com' ] ).to.have.property( 'timestamp' )
+			expect( state[ '12345' ] ).to.have.property( 'timestamp' )
 				.to.be.at.least( nowTime );
-		} );
-
-		it( 'should convert forward slashes to double colon when creating a new session', () => {
-			const state = jetpackSSOSessions( undefined, {
-				type: JETPACK_CONNECT_SSO_AUTHORIZE_SUCCESS,
-				ssoUrl: 'https://example.wordpress.com/example123?action=jetpack-sso&result=success&sso_nonce={$nonce}&user_id={$user_id}',
-				siteUrl: 'https://example.wordpress.com/example123'
-			} );
-
-			expect( state ).to.have.property( 'example.wordpress.com::example123' )
-				.to.be.a( 'object' );
 		} );
 
 		it( 'should persist state', () => {
 			const originalState = deepFreeze( {
 				ssoUrl: 'https://example.wordpress.com?action=jetpack-sso&result=success&sso_nonce={$nonce}&user_id={$user_id}',
-				siteUrl: 'https://example.wordpress.com'
+				siteId: '12345'
 			} );
 			const state = jetpackSSOSessions( originalState, {
 				type: SERIALIZE
@@ -387,7 +375,7 @@ describe( 'reducer', () => {
 		it( 'should load valid persisted state', () => {
 			const originalState = deepFreeze( {
 				ssoUrl: 'https://example.wordpress.com?action=jetpack-sso&result=success&sso_nonce={$nonce}&user_id={$user_id}',
-				siteUrl: 'https://example.wordpress.com',
+				siteId: '12345',
 				timestamp: Date.now()
 			} );
 			const state = jetpackSSOSessions( originalState, {
@@ -400,7 +388,7 @@ describe( 'reducer', () => {
 		it( 'should not load stale state', () => {
 			const originalState = deepFreeze( {
 				ssoUrl: 'https://example.wordpress.com?action=jetpack-sso&result=success&sso_nonce={$nonce}&user_id={$user_id}',
-				siteUrl: 'https://example.wordpress.com',
+				siteId: '12345',
 				timestamp: 1
 			} );
 			const state = jetpackSSOSessions( originalState, {
