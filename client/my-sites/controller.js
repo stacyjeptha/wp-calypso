@@ -187,8 +187,8 @@ module.exports = {
 	siteSelection( context, next ) {
 		const siteID = route.getSiteFragment( context.path );
 		const basePath = route.sectionify( context.path );
-		const currentUser = user.get();
-		const hasOneSite = currentUser.visible_site_count === 1;
+		const currentUser = user.fetching ? null : user.get(); // if we're fetching, should ignore it for now
+		const hasOneSite = currentUser && currentUser.visible_site_count === 1;
 		const allSitesPath = route.sectionify( context.path );
 
 		const redirectToPrimary = () => {
@@ -261,7 +261,7 @@ module.exports = {
 					if ( waitingNotice ) {
 						notices.removeNotice( waitingNotice );
 					}
-				} else if ( ( currentUser.visible_site_count !== sites.getVisible().length ) ) {
+				} else if ( ( user.get().visible_site_count !== sites.getVisible().length ) ) {
 					sites.initialized = false;
 					waitingNotice = notices.info( i18n.translate( 'Finishing set up…' ), { showDismiss: false } );
 					sites.once( 'change', selectOnSitesChange );

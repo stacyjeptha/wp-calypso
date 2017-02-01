@@ -43,10 +43,10 @@ import {
 	getSelectedSiteId,
 	getSelectedSiteSlug,
 } from 'state/ui/selectors';
-import {
-	getSiteOption
-} from 'state/sites/selectors';
 import { domainManagementList } from 'my-sites/upgrades/paths';
+import userFactory from 'lib/user';
+
+const user = userFactory();
 
 const Checkout = React.createClass( {
 	mixins: [ observe( 'sites', 'productsList' ) ],
@@ -186,7 +186,6 @@ const Checkout = React.createClass( {
 		const {
 			cart,
 			isDomainOnly,
-			selectedSite,
 			selectedSiteId,
 			selectedSiteSlug
 		} = this.props;
@@ -243,8 +242,13 @@ const Checkout = React.createClass( {
 				? `/plans/${ selectedSiteSlug }/thank-you`
 				: '/checkout/thank-you/plans';
 		} else if ( isDomainOnly && cartItems.hasDomainRegistration( cart ) && ! cartItems.hasPlan( cart ) ) {
-			// TODO: Use purchased domain name once it is possible to set it as a primary domain when site is created.
-			return domainManagementList( selectedSite.slug );
+			const domainName = cartItems.getDomainRegistrations( cart )[ 0 ].meta;
+
+			// that will update user's site count which will cause sites store to update which
+			// will update the site list
+			user.fetch();
+
+			return domainManagementList( domainName );
 		}
 
 		if ( receipt && receipt.receipt_id ) {
@@ -326,17 +330,12 @@ const Checkout = React.createClass( {
 } );
 
 module.exports = connect(
-	state => {
-		const selectedSiteId = getSelectedSiteId( state );
-
-		return {
-			cards: getStoredCards( state ),
-			isDomainOnly: getSiteOption( state, selectedSiteId, 'is_domain_only' ),
-			selectedSite: getSelectedSite( state ),
-			selectedSiteId,
-			selectedSiteSlug: getSelectedSiteSlug( state ),
-		};
-	},
+	state => ( {
+		cards: getStoredCards( state ),
+		selectedSite: getSelectedSite( state ),
+		selectedSiteId: getSelectedSiteId( state ),
+		selectedSiteSlug: getSelectedSiteSlug( state ),
+	} ),
 	{
 		clearPurchases,
 		clearSitePlans,
