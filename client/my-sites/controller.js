@@ -187,102 +187,93 @@ module.exports = {
 	siteSelection( context, next ) {
 		const siteID = route.getSiteFragment( context.path );
 		const basePath = route.sectionify( context.path );
+		const currentUser = user.fetching ? null : user.get(); // if we're fetching, should ignore it for now
+		const hasOneSite = currentUser && currentUser.visible_site_count === 1;
 		const allSitesPath = route.sectionify( context.path );
 
-		const onUserReady = () => {
-			const currentUser = user.get();
-			const hasOneSite = currentUser.visible_site_count === 1;
+		const redirectToPrimary = () => {
+			let redirectPath = `${ context.pathname }/${ sites.getPrimary().slug }`;
 
-			const redirectToPrimary = () => {
-				let redirectPath = `${ context.pathname }/${ sites.getPrimary().slug }`;
+			redirectPath = context.querystring
+				? `${ redirectPath }?${ context.querystring }`
+				: redirectPath;
 
-				redirectPath = context.querystring
-					? `${ redirectPath }?${ context.querystring }`
-					: redirectPath;
-
-				page.redirect( redirectPath );
-			};
-
-			if ( currentUser && currentUser.site_count === 0 ) {
-				renderEmptySites( context );
-				return analytics.pageView.record( basePath, sitesPageTitleForAnalytics + ' > No Sites' );
-			}
-
-			if ( currentUser && currentUser.visible_site_count === 0 ) {
-				renderNoVisibleSites( context );
-				return analytics
-					.pageView
-					.record( basePath, `${ sitesPageTitleForAnalytics } > All Sites Hidden` );
-			}
-
-			// Ignore the user account settings page
-			if ( /^\/settings\/account/.test( context.path ) ) {
-				return next();
-			}
-
-			// If the user has only one site, redirect to the single site
-			// context instead of rendering the all-site views.
-			if ( hasOneSite && ! siteID ) {
-				if ( sites.initialized ) {
-					redirectToPrimary();
-					return;
-				}
-				sites.once( 'change', redirectToPrimary );
-			}
-
-			// If the path fragment does not resemble a site, set all sites to visible
-			if ( ! siteID ) {
-				sites.selectAll();
-				context.store.dispatch( setAllSitesSelected() );
-				return next();
-			}
-
-			// If there's a valid site from the url path
-			// set site visibility to just that site on the picker
-			if ( sites.select( siteID ) ) {
-				const selectionComplete = onSelectedSiteAvailable( context );
-
-				// if there was a redirect, we should terminate processing of next routes
-				// and let the redirect proceed
-				if ( !selectionComplete ) {
-					return;
-				}
-			} else {
-				// if sites has fresh data and siteID is invalid
-				// redirect to allSitesPath
-				if ( sites.fetched || ! sites.fetching ) {
-					return page.redirect( allSitesPath );
-				}
-
-				let waitingNotice;
-				const selectOnSitesChange = () => {
-					// if sites have loaded, but siteID is invalid, redirect to allSitesPath
-					if ( sites.select( siteID ) ) {
-						sites.initialized = true;
-						onSelectedSiteAvailable( context );
-						if ( waitingNotice ) {
-							notices.removeNotice( waitingNotice );
-						}
-					} else if ( currentUser.visible_site_count !== sites.getVisible().length ) {
-						sites.initialized = false;
-						waitingNotice = notices.info( i18n.translate( 'Finishing set up…' ), { showDismiss: false } );
-						sites.once( 'change', selectOnSitesChange );
-						sites.fetch();
-					} else {
-						page.redirect( allSitesPath );
-					}
-				};
-				// Otherwise, check when sites has loaded
-				sites.once( 'change', selectOnSitesChange );
-			}
-
-			next();
+			page.redirect( redirectPath );
 		};
 
-		if ( user.fetching || ! user.fetched ) {
-			user.once( 'change', onUserReady );
-			user.fetch();
+		if ( currentUser && currentUser.site_count === 0 ) {
+			renderEmptySites( context );
+			return analytics.pageView.record( basePath, sitesPageTitleForAnalytics + ' > No Sites' );
 		}
+
+		if ( currentUser && currentUser.visible_site_count === 0 ) {
+			renderNoVisibleSites( context );
+			return analytics
+				.pageView
+				.record( basePath, `${ sitesPageTitleForAnalytics } > All Sites Hidden` );
+		}
+
+		// Ignore the user account settings page
+		if ( /^\/settings\/account/.test( context.path ) ) {
+			return next();
+		}
+
+		// If the user has only one site, redirect to the single site
+		// context instead of rendering the all-site views.
+		if ( hasOneSite && ! siteID ) {
+			if ( sites.initialized ) {
+				redirectToPrimary();
+				return;
+			}
+			sites.once( 'change', redirectToPrimary );
+		}
+
+		// If the path fragment does not resemble a site, set all sites to visible
+		if ( ! siteID ) {
+			sites.selectAll();
+			context.store.dispatch( setAllSitesSelected() );
+			return next();
+		}
+
+		// If there's a valid site from the url path
+		// set site visibility to just that site on the picker
+		if ( sites.select( siteID ) ) {
+			const selectionComplete = onSelectedSiteAvailable( context );
+
+			// if there was a redirect, we should terminate processing of next routes
+			// and let the redirect proceed
+			if ( ! selectionComplete ) {
+				return;
+			}
+		} else {
+			// if sites has fresh data and siteID is invalid
+			// redirect to allSitesPath
+			if ( sites.fetched || ! sites.fetching ) {
+				return page.redirect( allSitesPath );
+			}
+
+			let waitingNotice;
+			const selectOnSitesChange = () => {
+				// if sites have loaded, but siteID is invalid, redirect to allSitesPath
+				if ( sites.select( siteID ) ) {
+					sites.initialized = true;
+					onSelectedSiteAvailable( context );
+					if ( waitingNotice ) {
+						notices.removeNotice( waitingNotice );
+					}
+				} else if ( ( user.get().visible_site_count !== sites.getVisible().length ) ) {
+					sites.initialized = false;
+					waitingNotice = notices.info( i18n.translate( 'Finishing set up…' ), { showDismiss: false } );
+					sites.once( 'change', selectOnSitesChange );
+					sites.fetch();
+				} else {
+					page.redirect( allSitesPath );
+				}
+			};
+			// Otherwise, check when sites has loaded
+			sites.once( 'change', selectOnSitesChange );
+		}
+		next();
 	},
 
 	awaitSiteLoaded( context, next ) {
