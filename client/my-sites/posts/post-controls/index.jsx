@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import url from 'url';
@@ -175,6 +175,36 @@ const getAvailableControls = props => {
 };
 
 export class PostControls extends Component {
+	static propTypes = {
+		canUserDeletePost: PropTypes.bool,
+		canUserEditPost: PropTypes.bool,
+		canUserPublishPost: PropTypes.bool,
+		editURL: PropTypes.string.isRequired,
+		fullWidth: PropTypes.bool,
+		isPublicizeEnabled: PropTypes.bool,
+		onDelete: PropTypes.func,
+		onPublish: PropTypes.func,
+		onRestore: PropTypes.func,
+		onToggleShare: PropTypes.func,
+		onTrash: PropTypes.func,
+		post: PropTypes.object.isRequired,
+		recordCopyPost: PropTypes.func,
+		recordEditPost: PropTypes.func,
+		recordPreviewPost: PropTypes.func,
+		recordViewPost: PropTypes.func,
+		recordViewPostStats: PropTypes.func,
+		site: PropTypes.object,
+		translate: PropTypes.func,
+	};
+
+	state = {
+		showMoreOptions: false,
+	};
+
+	onShowMore = () => this.setState( { showMoreOptions: true } );
+
+	onHideMore = () => this.setState( { showMoreOptions: false } );
+
 	render() {
 		const { main, more } = getAvailableControls();
 		const classes = classNames( 'post-controls', {
