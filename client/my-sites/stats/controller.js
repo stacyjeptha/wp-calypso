@@ -15,7 +15,7 @@ import route from 'lib/route';
 import analytics from 'lib/analytics';
 import titlecase from 'to-title-case';
 import { setDocumentHeadTitle as setTitle } from 'state/document-head/actions';
-import { renderWithReduxStore } from 'lib/react-helpers';
+import { renderPage } from 'lib/react-helpers';
 import { savePreference } from 'state/preferences/actions';
 import { getCurrentLayoutFocus } from 'state/ui/layout-focus/selectors';
 import { setNextLayoutFocus } from 'state/ui/layout-focus/actions';
@@ -135,13 +135,13 @@ module.exports = {
 
 		analytics.pageView.record( basePath, analyticsPageTitle + ' > Insights' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( StatsComponent, {
 				followList: followList,
 				commentsList: commentsList
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -173,7 +173,7 @@ module.exports = {
 			analytics.mc.bumpStat( 'calypso_stats_overview_period', activeFilter.period );
 			analytics.pageView.record( basePath, analyticsPageTitle + ' > ' + titlecase( activeFilter.period ) );
 
-			renderWithReduxStore(
+			renderPage(
 				React.createElement( StatsComponent, {
 					period: activeFilter.period,
 					sites: sites,
@@ -181,7 +181,7 @@ module.exports = {
 					user: user
 				} ),
 				document.getElementById( 'primary' ),
-				context.store
+				context
 			);
 		}
 	},
@@ -288,10 +288,10 @@ module.exports = {
 				path: context.pathname,
 			};
 
-			renderWithReduxStore(
+			renderPage(
 				React.createElement( siteComponent, siteComponentChildren ),
 				document.getElementById( 'primary' ),
-				context.store
+				context
 			);
 		}
 	},
@@ -421,7 +421,7 @@ module.exports = {
 				analyticsPageTitle + ' > ' + titlecase( activeFilter.period ) + ' > ' + titlecase( context.params.module )
 			);
 
-			renderWithReduxStore(
+			renderPage(
 				React.createElement( StatsSummaryComponent, {
 					date: date,
 					context: context,
@@ -436,7 +436,7 @@ module.exports = {
 					...extraProps
 				} ),
 				document.getElementById( 'primary' ),
-				context.store
+				context
 			);
 		}
 	},
@@ -467,14 +467,14 @@ module.exports = {
 			analytics.pageView.record( '/stats/' + postOrPage + '/:post_id/:site',
 				analyticsPageTitle + ' > Single ' + titlecase( postOrPage ) );
 
-			renderWithReduxStore(
+			renderPage(
 				React.createElement( StatsPostComponent, {
 					postId: postId,
 					context: context,
 					path: context.path,
 				} ),
 				document.getElementById( 'primary' ),
-				context.store
+				context
 			);
 		}
 	},
@@ -521,7 +521,7 @@ module.exports = {
 				analyticsPageTitle + ' > Followers > ' + titlecase( followType )
 			);
 
-			renderWithReduxStore(
+			renderPage(
 				React.createElement( FollowsComponent, {
 					path: context.path,
 					sites: sites,
@@ -534,7 +534,7 @@ module.exports = {
 					domain: siteDomain
 				} ),
 				document.getElementById( 'primary' ),
-				context.store
+				context
 			);
 		}
 	}

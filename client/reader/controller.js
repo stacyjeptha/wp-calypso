@@ -22,7 +22,7 @@ import {
 } from 'reader/route';
 import { recordTrack } from 'reader/stats';
 import { preload } from 'sections-preload';
-import { renderWithReduxStore } from 'lib/react-helpers';
+import { renderPage } from 'lib/react-helpers';
 import ReaderSidebarComponent from 'reader/sidebar';
 
 const analyticsPageTitle = 'Reader';
@@ -37,10 +37,10 @@ function userHasHistory( context ) {
 }
 
 function renderFeedError( context ) {
-	renderWithReduxStore(
+	renderPage(
 		React.createElement( FeedError ),
 		document.getElementById( 'primary' ),
-		context.store
+		context
 	);
 }
 
@@ -127,12 +127,12 @@ module.exports = {
 	},
 
 	sidebar( context, next ) {
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( ReduxProvider, { store: context.store },
 				React.createElement( ReaderSidebarComponent, { path: context.path } )
 			),
 			document.getElementById( 'secondary' ),
-			context.store
+			context
 		);
 
 		next();
@@ -212,7 +212,7 @@ module.exports = {
 			feed_id: context.params.feed_id
 		} );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( FeedStream, {
 				key: 'feed-' + context.params.feed_id,
 				postsStore: feedStore,
@@ -230,7 +230,7 @@ module.exports = {
 				showBack: userHasHistory( context )
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -248,7 +248,7 @@ module.exports = {
 			blog_id: context.params.blog_id
 		} );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( SiteStream, {
 				key: 'site-' + context.params.blog_id,
 				postsStore: feedStore,
@@ -266,7 +266,7 @@ module.exports = {
 				showBack: userHasHistory( context )
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 

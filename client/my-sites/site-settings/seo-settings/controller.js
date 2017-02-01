@@ -10,7 +10,7 @@ import React from 'react';
  */
 import analytics from 'lib/analytics';
 import config from 'config';
-import { renderWithReduxStore } from 'lib/react-helpers';
+import { renderPage } from 'lib/react-helpers';
 import route from 'lib/route';
 import SeoSettingsMain from 'my-sites/site-settings/seo-settings/main';
 import sitesFactory from 'lib/sites-list';
@@ -54,12 +54,12 @@ export default {
 
 		const upgradeToBusiness = () => page( '/checkout/' + site.domain + '/business' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( SeoSettingsMain, {
 				...{ sites, upgradeToBusiness }
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 
 		// analytics tracking

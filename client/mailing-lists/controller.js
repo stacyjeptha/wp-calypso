@@ -9,7 +9,7 @@ import { setSection } from 'state/ui/actions';
  * Internal Dependencies
  */
 import MainComponent from './main';
-import { renderWithReduxStore } from 'lib/react-helpers';
+import { renderPage } from 'lib/react-helpers';
 
 export default {
 	unsubscribe( context ) {
@@ -18,7 +18,7 @@ export default {
 			hasSidebar: false
 		} ) );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( MainComponent, {
 				email: context.query.email,
 				category: context.query.category,
@@ -26,7 +26,7 @@ export default {
 				context: omit( context.query, [ 'email', 'category', 'hmac' ] )
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	}
 };

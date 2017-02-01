@@ -29,7 +29,7 @@ import config from 'config';
 import analytics from 'lib/analytics';
 import utils from 'lib/site/utils';
 import { setLayoutFocus } from 'state/ui/layout-focus/actions';
-import { renderWithReduxStore } from 'lib/react-helpers';
+import { renderPage } from 'lib/react-helpers';
 import isDomainOnlySite from 'state/selectors/is-domain-only-site';
 import { domainManagementList } from 'my-sites/upgrades/paths';
 import SitesComponent from 'my-sites/sites';
@@ -77,10 +77,10 @@ function renderEmptySites( context ) {
 
 	removeSidebar( context );
 
-	renderWithReduxStore(
+	renderPage(
 		React.createElement( NoSitesMessage ),
 		document.getElementById( 'primary' ),
-		context.store
+		context
 	);
 }
 
@@ -92,7 +92,7 @@ function renderNoVisibleSites( context ) {
 
 	removeSidebar( context );
 
-	renderWithReduxStore(
+	renderPage(
 		React.createElement( EmptyContentComponent, {
 			title: i18n.translate( 'You have %(hidden)d hidden WordPress site.', 'You have %(hidden)d hidden WordPress sites.', {
 				count: hiddenSites,
@@ -109,7 +109,7 @@ function renderNoVisibleSites( context ) {
 			secondaryActionURL: `${ signup_url }?ref=calypso-nosites`
 		} ),
 		document.getElementById( 'primary' ),
-		context.store
+		context
 	);
 }
 
@@ -332,10 +332,10 @@ module.exports = {
 
 	navigation: function( context, next ) {
 		// Render the My Sites navigation in #secondary
-		renderWithReduxStore(
+		renderPage(
 			createNavigation( context ),
 			document.getElementById( 'secondary' ),
-			context.store
+			context
 		);
 		next();
 	},
@@ -347,14 +347,14 @@ module.exports = {
 		const selectedSite = sites.getSelectedSite();
 
 		if ( selectedSite && selectedSite.jetpack ) {
-			renderWithReduxStore( (
+			renderPage( (
 				<Main>
 					<JetpackManageErrorPage
 						template="noDomainsOnJetpack"
 						siteId={ sites.getSelectedSite().ID }
 					/>
 				</Main>
-			), document.getElementById( 'primary' ), context.store );
+			), document.getElementById( 'primary' ), context );
 
 			analytics.pageView.record( basePath, '> No Domains On Jetpack' );
 		} else {
@@ -376,10 +376,10 @@ module.exports = {
 		removeSidebar( context );
 		context.store.dispatch( setLayoutFocus( 'content' ) );
 
-		renderWithReduxStore(
+		renderPage(
 			createSitesComponent( context ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 

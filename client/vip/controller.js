@@ -11,7 +11,7 @@ var React = require( 'react' ),
 var setTitle = require( 'state/document-head/actions' ).setDocumentHeadTitle,
 	sites = require( 'lib/sites-list' )();
 
-import { renderWithReduxStore } from 'lib/react-helpers';
+import { renderPage } from 'lib/react-helpers';
 
 module.exports = {
 
@@ -25,7 +25,7 @@ module.exports = {
 
 		context.store.dispatch( setTitle( i18n.translate( 'VIP', { textOnly: true } ) ) ); // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( vipdashboard, {
 				context: context,
 				sites: sites,
@@ -33,7 +33,7 @@ module.exports = {
 				path: context.path
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -43,7 +43,7 @@ module.exports = {
 
 		context.store.dispatch( setTitle( i18n.translate( 'VIP Deploys', { textOnly: true } ) ) ); // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( vipdeploys, {
 				context: context,
 				sites: sites,
@@ -51,7 +51,7 @@ module.exports = {
 				path: context.path
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -61,7 +61,7 @@ module.exports = {
 
 		context.store.dispatch( setTitle( i18n.translate( 'VIP Billing', { textOnly: true } ) ) ); // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( vipbilling, {
 				context: context,
 				sites: sites,
@@ -69,7 +69,7 @@ module.exports = {
 				path: context.path
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -79,7 +79,7 @@ module.exports = {
 
 		context.store.dispatch( setTitle( i18n.translate( 'VIP Support', { textOnly: true } ) ) ); // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( vipsupport, {
 				context: context,
 				sites: sites,
@@ -87,7 +87,7 @@ module.exports = {
 				path: context.path
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -97,7 +97,7 @@ module.exports = {
 
 		context.store.dispatch( setTitle( i18n.translate( 'VIP Backups', { textOnly: true } ) ) ); // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( vipbackups, {
 				context: context,
 				sites: sites,
@@ -105,7 +105,7 @@ module.exports = {
 				path: context.path
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -117,7 +117,7 @@ module.exports = {
 
 		context.store.dispatch( setTitle( i18n.translate( 'VIP Logs', { textOnly: true } ) ) ); // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( viplogs, {
 				context: context,
 				search: search,
@@ -127,7 +127,7 @@ module.exports = {
 				path: context.path
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	}
 };

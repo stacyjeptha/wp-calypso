@@ -14,7 +14,7 @@ import analytics from 'lib/analytics';
 import route from 'lib/route';
 import userSettings from 'lib/user-settings';
 import { setDocumentHeadTitle as setTitle } from 'state/document-head/actions';
-import { renderWithReduxStore } from 'lib/react-helpers';
+import { renderPage } from 'lib/react-helpers';
 
 const ANALYTICS_PAGE_TITLE = 'Me';
 
@@ -22,12 +22,12 @@ export default {
 	sidebar( context, next ) {
 		const SidebarComponent = require( 'me/sidebar' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( SidebarComponent, {
 				context: context
 			} ),
 			document.getElementById( 'secondary' ),
-			context.store
+			context
 		);
 
 		next();
@@ -41,7 +41,7 @@ export default {
 
 		analytics.pageView.record( basePath, ANALYTICS_PAGE_TITLE + ' > My Profile' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( ProfileComponent,
 				{
 					userSettings: userSettings,
@@ -49,7 +49,7 @@ export default {
 				}
 			),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -61,7 +61,7 @@ export default {
 
 		analytics.pageView.record( basePath, ANALYTICS_PAGE_TITLE + ' > Get Apps' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( AppsComponent,
 				{
 					userSettings: userSettings,
@@ -69,7 +69,7 @@ export default {
 				}
 			),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -88,14 +88,14 @@ export default {
 		analytics.tracks.recordEvent( 'calypso_me_next_view', { is_welcome: isWelcome } );
 		analytics.pageView.record( analyticsBasePath, ANALYTICS_PAGE_TITLE + ' > Next' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( NextSteps, {
 				path: context.path,
 				isWelcome: isWelcome,
 				trophiesData: trophiesData
 			} ),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 

@@ -12,7 +12,7 @@ import analytics from 'lib/analytics';
 import notices from 'notices';
 import userSettings from 'lib/user-settings';
 import { setDocumentHeadTitle as setTitle } from 'state/document-head/actions';
-import { renderWithReduxStore } from 'lib/react-helpers';
+import { renderPage } from 'lib/react-helpers';
 
 const ANALYTICS_PAGE_TITLE = 'Me';
 
@@ -32,7 +32,7 @@ export default {
 
 		analytics.pageView.record( basePath, ANALYTICS_PAGE_TITLE + ' > Password' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( PasswordComponent,
 				{
 					userSettings: userSettings,
@@ -41,7 +41,7 @@ export default {
 				}
 			),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -54,7 +54,7 @@ export default {
 
 		analytics.pageView.record( basePath, ANALYTICS_PAGE_TITLE + ' > Two-Step Authentication' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( TwoStepComponent,
 				{
 					userSettings: userSettings,
@@ -63,7 +63,7 @@ export default {
 				}
 			),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -76,7 +76,7 @@ export default {
 
 		analytics.pageView.record( basePath, ANALYTICS_PAGE_TITLE + ' > Connected Applications' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( ConnectedAppsComponent,
 				{
 					userSettings: userSettings,
@@ -85,7 +85,7 @@ export default {
 				}
 			),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	},
 
@@ -97,7 +97,7 @@ export default {
 
 		analytics.pageView.record( basePath, ANALYTICS_PAGE_TITLE + ' > Account Recovery' );
 
-		renderWithReduxStore(
+		renderPage(
 			React.createElement( AccountRecoveryComponent,
 				{
 					userSettings: userSettings,
@@ -105,7 +105,7 @@ export default {
 				}
 			),
 			document.getElementById( 'primary' ),
-			context.store
+			context
 		);
 	}
 };
