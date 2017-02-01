@@ -2,7 +2,12 @@
  * Internal Dependencies
  */
 import {
-	READER_STREAMS_PAGE_REQUEST
+	READER_STREAMS_PAGE_REQUEST,
+	READER_STREAMS_SHOW_UPDATES,
+	READER_STREAMS_SELECT_ITEM,
+	READER_STREAMS_FILL_GAP,
+	READER_STREAMS_DISMISS_POST,
+	READER_STREAMS_SHUFFLE_POSTS
 } from 'state/action-types';
 
 /**
@@ -23,30 +28,40 @@ export function fetchPosts( streamId, range ) {
 	};
 }
 
-export function showUpdates() {
-
+export function showUpdates( streamId ) {
+	return {
+		type: READER_STREAMS_SHOW_UPDATES,
+		streamId,
+	};
 }
 
-export function selectNextItem() {
-
+export function selectItem( streamId, postId ) {
+	return {
+		type: READER_STREAMS_SELECT_ITEM,
+		streamId,
+		postId,
+	};
 }
 
-export function selectPreviousItem() {
-
+export function fillGap( streamId, gap ) {
+	return {
+		type: READER_STREAMS_FILL_GAP,
+		streamId,
+		gap,
+	};
 }
 
-export function selectItem() {
-
+export function dismissPost( streamId, postId ) {
+	return {
+		type: READER_STREAMS_DISMISS_POST,
+		streamId,
+		postId
+	};
 }
 
-export function fillGap() {
-
-}
-
-export function dismissPost() {
-
-}
-
-export function shufflePosts() {
-
+export function shufflePosts( streamId ) {
+	return {
+		type: READER_STREAMS_SHUFFLE_POSTS,
+		streamId
+	};
 }
