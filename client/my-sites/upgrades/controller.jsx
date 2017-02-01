@@ -230,7 +230,6 @@ module.exports = {
 				<CheckoutData>
 					<Checkout
 						productsList={ productsList }
-						isDomainOnly={ true }
 					/>
 				</CheckoutData>
 			),
