@@ -1,13 +1,11 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import url from 'url';
 import classNames from 'classnames';
-import { noop } from 'lodash';
-import Gridicon from 'gridicons';
 
 /**
  * Internal dependencies
@@ -22,6 +20,7 @@ import {
 	canCurrentUser,
 	isPublicizeEnabled,
 } from 'state/selectors';
+import PostControl from './post-control';
 import { ga } from 'lib/analytics';
 import { userCan } from 'lib/posts/utils';
 
@@ -175,45 +174,30 @@ const getAvailableControls = props => {
 	return controls;
 };
 
-const getControlElements = controls => controls.map( ( control, index ) =>
-	<li
-		className={ classNames( { 'post-controls__disabled': control.disabled } ) }
-		key={ index }
-	>
-		<a
-			className={ `post-controls__${ control.className }` }
-			href={ control.href }
-			onClick={ control.disabled ? noop : control.onClick }
-			target={ control.target ? control.target : null }
-		>
-			<Gridicon icon={ control.icon } size={ 18 } />
-			<span>
-				{ control.text }
-			</span>
-		</a>
-	</li>
-);
+export class PostControls extends Component {
+	render() {
+		const { main, more } = getAvailableControls();
+		const classes = classNames( 'post-controls', {
+			'show-more-options': this.state.showMoreOptions,
+			'post-controls--desk-nomore': more <= 2,
+		} );
 
-export const PostControls = props => {
-	const { main, more } = getAvailableControls( props );
-	const classes = classNames(
-		'post-controls',
-		{ 'post-controls--desk-nomore': more <= 2 }
-	);
-
-	return (
-		<div className={ classes }>
-			{ more.length > 0 &&
-				<ul className="posts__post-controls post-controls__pane post-controls__more-options">
-					{ getControlElements( more ) }
+		return (
+			<div className={ classes }>
+				<ul className="post-controls__pane post-controls__more-options">
+					{ more.map( ( control, index ) =>
+						<PostControl { ...control } key={ index } />
+					) }
 				</ul>
-			}
-			<ul className="posts__post-controls post-controls__pane post-controls__main-options">
-				{ getControlElements( main ) }
-			</ul>
-		</div>
-	);
-};
+				<ul className="post-controls__pane post-controls__main-options">
+					{ main.map( ( control, index ) =>
+						<PostControl { ...control } key={ index } />
+					) }
+				</ul>
+			</div>
+		);
+	}
+}
 
 const mapStateToProps = ( state, { site, post } ) => {
 	const siteId = site && site.ID ? site.ID : null;
