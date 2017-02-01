@@ -90,6 +90,7 @@ const ConnectedSingleSiteJetpack = connectOptions(
 							<ConnectedThemesSelection
 								options={ [
 									'activateOnJetpack',
+									'preview',
 									'tryAndCustomizeOnJetpack',
 									'customize',
 									'separator',
