@@ -32,9 +32,13 @@ import MediaActions from 'lib/media/actions';
 import MediaStore from 'lib/media/store';
 import MediaLibrarySelectedStore from 'lib/media/library-selected-store';
 import { isItemBeingUploaded } from 'lib/media/utils';
-import { addQueryArgs } from 'lib/url';
 import { getImageEditorCrop, getImageEditorTransform } from 'state/ui/editor/image-editor/selectors';
-import { getSiteIconId, getSiteIconUrl, isSiteSupportingImageEditor } from 'state/selectors';
+import {
+	getSiteIconId,
+	getSiteIconUrl,
+	isPrivateSite,
+	isSiteSupportingImageEditor
+} from 'state/selectors';
 import { errorNotice } from 'state/notices/actions';
 
 class SiteIconSetting extends Component {
@@ -203,7 +207,7 @@ class SiteIconSetting extends Component {
 	}
 
 	render() {
-		const { isJetpack, customizerUrl, generalOptionsUrl, siteSupportsImageEditor } = this.props;
+		const { isJetpack, isPrivate, customizerUrl, generalOptionsUrl, siteSupportsImageEditor } = this.props;
 		const { isModalVisible, hasToggledModal, isEditingSiteIcon } = this.state;
 		const isIconManagementEnabled = isEnabled( 'manage/site-settings/site-icon' );
 
@@ -217,10 +221,8 @@ class SiteIconSetting extends Component {
 		} else {
 			buttonProps = { rel: 'external' };
 
-			if ( isJetpack ) {
-				buttonProps.href = addQueryArgs( {
-					'autofocus[section]': 'title_tagline'
-				}, customizerUrl );
+			if ( isJetpack || ( isIconManagementEnabled && isPrivate ) ) {
+				buttonProps.href = customizerUrl;
 			} else {
 				buttonProps.href = generalOptionsUrl;
 				buttonProps.target = '_blank';
@@ -297,11 +299,12 @@ export default connect(
 		return {
 			siteId,
 			isJetpack: isJetpackSite( state, siteId ),
+			isPrivate: isPrivateSite( state, siteId ),
 			siteIconId: getSiteIconId( state, siteId ),
 			hasIcon: !! getSiteIconUrl( state, siteId ),
 			isSaving: isSavingSiteSettings( state, siteId ),
 			siteSupportsImageEditor: isSiteSupportingImageEditor( state, siteId ),
-			customizerUrl: getCustomizerUrl( state, siteId ),
+			customizerUrl: getCustomizerUrl( state, siteId, 'identity' ),
 			generalOptionsUrl: getSiteAdminUrl( state, siteId, 'options-general.php' ),
 			crop: getImageEditorCrop( state ),
 			transform: getImageEditorTransform( state )
