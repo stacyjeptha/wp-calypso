@@ -3,15 +3,13 @@
  */
 import { mergeHandlers } from 'state/data-layer/utils';
 import plans from './plans';
-import reader from './reader';
-import sites from './sites';
 import read from './read';
+import sites from './sites';
 
 export const handlers = mergeHandlers(
 	plans,
-	reader,
-	sites,
 	read,
+	sites,
 );
 
 export default handlers;
