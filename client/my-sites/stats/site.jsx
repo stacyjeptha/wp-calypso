@@ -120,7 +120,6 @@ module.exports = React.createClass( {
 						path="videoplays"
 						moduleStrings={ moduleStrings.videoplays }
 						period={ this.props.period }
-						date={ queryDate }
 						query={ query }
 						statType="statsVideoPlays"
 						showSummaryLink
@@ -133,7 +132,6 @@ module.exports = React.createClass( {
 						path="podcastdownloads"
 						moduleStrings={ moduleStrings.podcastdownloads }
 						period={ this.props.period }
-						date={ queryDate }
 						query={ query }
 						statType="statsPodcastDownloads"
 						showSummaryLink
@@ -162,7 +160,11 @@ module.exports = React.createClass( {
 					>
 						<DatePicker
 							period={ this.props.period.period }
-							date={ this.props.date } />
+							date={ this.props.date }
+							query={ query }
+							statsType="statsTopPosts"
+							showQueryDate
+						/>
 					</StatsPeriodNavigation>
 					<div className="stats__module-list is-events">
 						<div className="stats__module-column">
@@ -171,7 +173,6 @@ module.exports = React.createClass( {
 								moduleStrings={ moduleStrings.posts }
 								period={ this.props.period }
 								query={ query }
-								date={ queryDate }
 								statType="statsTopPosts"
 								showSummaryLink />
 							<StatsModule
@@ -179,7 +180,6 @@ module.exports = React.createClass( {
 								moduleStrings={ moduleStrings.referrers }
 								period={ this.props.period }
 								query={ query }
-								date={ queryDate }
 								statType="statsReferrers"
 								showSummaryLink />
 							<StatsModule
@@ -187,14 +187,12 @@ module.exports = React.createClass( {
 								moduleStrings={ moduleStrings.clicks }
 								period={ this.props.period }
 								query={ query }
-								date={ queryDate }
 								statType="statsClicks"
 								showSummaryLink />
 							<StatsModule
 								path="authors"
 								moduleStrings={ moduleStrings.authors }
 								period={ this.props.period }
-								date={ queryDate }
 								query={ query }
 								statType="statsTopAuthors"
 								className="stats__author-views"
@@ -210,7 +208,6 @@ module.exports = React.createClass( {
 								path="searchterms"
 								moduleStrings={ moduleStrings.search }
 								period={ this.props.period }
-								date={ queryDate }
 								query={ query }
 								statType="statsSearchTerms"
 								showSummaryLink />
