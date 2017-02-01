@@ -72,6 +72,10 @@
 		&.is-indented {
 			margin-left: 24px;
 		}
+
+		code {
+			font-size: inherit;
+		}
 	}
 
 	p.settings-alert {
