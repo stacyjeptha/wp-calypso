@@ -114,7 +114,14 @@ class CustomContentTypes extends Component {
 			site,
 			translate
 		} = this.props;
-		const fieldLabel = 'Enable Testimonial custom content types.';
+		const fieldLabel = translate(
+			'Enable {{strong}}Testimonial{{/strong}} custom content types.',
+			{
+				components: {
+					strong: <strong />,
+				}
+			}
+		);
 		const fieldDescription = translate(
 			'The Testimonial custom content type allows you to add, organize, and display your ' +
 			'testimonials. If your theme doesn’t support it yet, you can display testimonials using ' +
@@ -137,7 +144,14 @@ class CustomContentTypes extends Component {
 			site,
 			translate
 		} = this.props;
-		const fieldLabel = 'Enable Portfolio custom content types.';
+		const fieldLabel = translate(
+			'Enable {{strong}}Portfolio{{/strong}} custom content types.',
+			{
+				components: {
+					strong: <strong />,
+				}
+			}
+		);
 		const fieldDescription = translate(
 			'The Portfolio custom content type gives you an easy way to manage and showcase projects ' +
 			'on your site. If your theme doesn’t support it yet, you can display the portfolio using ' +
