@@ -19,7 +19,6 @@ import { renderWithReduxStore } from 'lib/react-helpers';
 import { savePreference } from 'state/preferences/actions';
 import { getCurrentLayoutFocus } from 'state/ui/layout-focus/selectors';
 import { setNextLayoutFocus } from 'state/ui/layout-focus/actions';
-import Emitter from 'lib/mixins/emitter';
 const user = userFactory();
 const sites = sitesFactory();
 const analyticsPageTitle = 'Stats';
@@ -293,28 +292,22 @@ module.exports = {
 		let siteId = context.params.site_id;
 		const siteFragment = route.getSiteFragment( context.path );
 		const queryOptions = context.query;
-		const StatsList = require( 'lib/stats/stats-list' );
 		const StatsSummaryComponent = require( 'my-sites/stats/summary' );
-		const filters = function( contextModule, _siteId ) {
-			return [
-				{ title: i18n.translate( 'Days' ), path: '/stats/' + contextModule + '/' + _siteId,
-					altPaths: [ '/stats/day/' + contextModule + '/' + _siteId ], id: 'stats-day',
-						period: 'day', back: '/stats/' + _siteId },
-				{ title: i18n.translate( 'Weeks' ), path: '/stats/week/' + contextModule + '/' + _siteId,
-					id: 'stats-week', period: 'week', back: '/stats/week/' + _siteId },
-				{ title: i18n.translate( 'Months' ), path: '/stats/month/' + contextModule + '/' + _siteId,
-					id: 'stats-month', period: 'month', back: '/stats/month/' + _siteId },
-				{ title: i18n.translate( 'Years' ), path: '/stats/year/' + contextModule + '/' + _siteId,
-					id: 'stats-year', period: 'year', back: '/stats/year/' + _siteId }
-			];
-		}.bind( null, context.params.module, siteId );
+		const contextModule = context.params.module;
+		const filters = [
+			{ path: '/stats/' + contextModule + '/' + siteId,
+				altPaths: [ '/stats/day/' + contextModule + '/' + siteId ], id: 'stats-day',
+				period: 'day' },
+			{ path: '/stats/week/' + contextModule + '/' + siteId, id: 'stats-week', period: 'week' },
+			{ path: '/stats/month/' + contextModule + '/' + siteId, id: 'stats-month', period: 'month' },
+			{ path: '/stats/year/' + contextModule + '/' + siteId, id: 'stats-year', period: 'year' }
+		];
 		let date;
-		let endDate;
 		let period;
-		let summaryList;
-		let visitsList;
 
-		const validModules = [ 'posts', 'referrers', 'clicks', 'countryviews', 'authors', 'videoplays', 'videodetails', 'podcastdownloads', 'searchterms' ];
+		const validModules = [
+			'posts', 'referrers', 'clicks', 'countryviews', 'authors', 'videoplays', 'videodetails', 'podcastdownloads', 'searchterms'
+		];
 		let momentSiteZone = i18n.moment();
 		const basePath = route.sectionify( context.path );
 
@@ -324,7 +317,7 @@ module.exports = {
 		}
 		siteId = site ? ( site.ID || 0 ) : 0;
 
-		const activeFilter = find( filters(), ( filter ) => {
+		const activeFilter = find( filters, ( filter ) => {
 			return context.pathname === filter.path || ( filter.altPaths && -1 !== filter.altPaths.indexOf( context.pathname ) );
 		} );
 
@@ -350,15 +343,8 @@ module.exports = {
 				date = momentSiteZone.endOf( activeFilter.period );
 			}
 			period = rangeOfPeriod( activeFilter.period, date );
-			endDate = period.endOf.format( 'YYYY-MM-DD' );
 
-			const siteDomain = ( site && ( typeof site.slug !== 'undefined' ) )
-				? site.slug : siteFragment;
-			let extraProps = {};
-
-			// When old list summaries are transitioned to redux, we need a "fake" emitter
-			// TODO when all lists are moved to redux, remove this logic
-			const fakeStatsList = Emitter( {} );
+			const extraProps = context.params.module === 'videodetails' ? { postId: parseInt( queryOptions.post, 10 ) } : {};
 
 			let statsQueryOptions = {};
 
@@ -366,47 +352,6 @@ module.exports = {
 			if ( queryOptions.summarize && queryOptions.num ) {
 				statsQueryOptions = pick( queryOptions, [ 'num', 'summarize' ] );
 				statsQueryOptions.period = 'day';
-			}
-
-			switch ( context.params.module ) {
-
-				case 'posts':
-					summaryList = fakeStatsList;
-					break;
-
-				case 'referrers':
-					summaryList = fakeStatsList;
-					break;
-
-				case 'clicks':
-					summaryList = fakeStatsList;
-					break;
-
-				case 'countryviews':
-					summaryList = fakeStatsList;
-					break;
-
-				case 'authors':
-					summaryList = fakeStatsList;
-					break;
-
-				case 'videoplays':
-					summaryList = fakeStatsList;
-					break;
-
-				case 'videodetails':
-					summaryList = new StatsList( { statType: 'statsVideo', post: queryOptions.post,
-						siteID: siteId, period: activeFilter.period, date: endDate, max: 0, domain: siteDomain } );
-					extraProps = { postId: queryOptions.post };
-					break;
-
-				case 'searchterms':
-					summaryList = fakeStatsList;
-					break;
-
-				case 'podcastdownloads':
-					summaryList = fakeStatsList;
-					break;
 			}
 
 			analytics.pageView.record(
@@ -419,11 +364,6 @@ module.exports = {
 					date: date,
 					context: context,
 					path: context.pathname,
-					sites: sites,
-					filters: filters,
-					summaryList: summaryList,
-					visitsList: visitsList,
-					siteId: siteId,
 					period: period,
 					statsQueryOptions,
 					...extraProps
