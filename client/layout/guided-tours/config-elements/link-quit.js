@@ -33,10 +33,10 @@ export default class LinkQuit extends Component {
 
 	render() {
 		const { children, primary, subtle, href, target } = this.props;
-		const classes = subtle ? 'guided-tours__subtle-button' : '';
+		const classes = subtle ? ' guided-tours__subtle-button' : '';
 		return (
 			<Button
-				className={ classes }
+				className={ 'button-link' + classes }
 				onClick={ this.onClick }
 				primary={ primary }
 				href={ href }
